@@ -5,7 +5,7 @@ const goods = [
     { title: 'Монитор', price: 10000 },
 ];
 
-const getGoodsItemLayout = (title, price) => {
+const getGoodsItemLayout = (title = 'Soon', price = 'Soon') => {
     return `
         <div class="item">
             <h4>${title}</h4>
