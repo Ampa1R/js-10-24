@@ -10,13 +10,14 @@ const getGoodsItemLayout = (title, price) => {
         <div class="item">
             <h4>${title}</h4>
             <p>${price}</p>
+            <button class='buy-button' id='add-button'>BUY</button>
         </div>
     `;
 }
 
 const render = (list) => {
     let goodsItems = list.map(item => getGoodsItemLayout(item.title, item.price));
-    document.querySelector('.goods').innerHTML = goodsItems;
+    document.querySelector('.goods').innerHTML = goodsItems.join('');
 };
 
 render(goods);
