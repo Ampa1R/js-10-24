@@ -33,7 +33,7 @@ class GoodList {
         document.querySelector('.goods-list').innerHTML = ListHtml;
     }
     sumGoods() {
-        function CountPirce(goods) {
+        this.CountPirce = function(goods) {
             let costItem = 0;
             for (i = 0; i < goods.length; i++) {
                 costItem += goods[i].price;
