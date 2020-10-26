@@ -65,3 +65,20 @@ nav {
     border: 3px solid blue;
     box-sizing: border-box;
 }
+
+#basket {
+    border: 3px solid black;
+    border-radius: 10px;
+    background-color: lightblue;
+    box-sizing: border-box;
+    margin: 0 auto;
+    margin-top: 10px;
+    width: 800px;
+}
+
+.hidden {
+    display: none;
+}
+.show {
+    display: block;
+}
