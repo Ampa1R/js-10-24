@@ -1,28 +1,95 @@
-const goods = [
-    { title: 'Мышка', price: 500 },
-    { title: 'Ноутбук', price: 50000 },
-    { title: 'Клавиатура', price: 5000 },
-    { title: 'Монитор', price: 10000 },
-    {},
-    {},
-];
+class GoodsItem {
+    constructor({ title = 'Нет данных', price }) {
+        this.title = title;
+        this.price = price;
+    }
 
-const getGoodsItemLayout = (title = "More info soon", price = "More info soon") => {
-    return `
-        <div class="item">
-            <h4>${title}</h4>
-            <div class="product_img_div"></div>
-            <p>${price}</p>
-            <button>Добавить в корзину</button>
-        </div>
-    `;
+    render() {
+        return `
+            <div class="item">
+                <h4>${this.title}</h4>
+                <p>${this.price}</p>
+            </div>
+        `;
+    }
 }
 
-const render = (list = [{},{}]) => {
-    let goodsItems = list.map(item => getGoodsItemLayout(item.title, item.price));
-    goodsItems.forEach(function(item){
-        document.querySelector('.goods').innerHTML += item;
-    })
-};
+class GoodsList {
+    constructor() {
+        this.goods = [];
+    }
 
-render(goods);
+    fetchData() {
+        this.goods = [
+            { title: 'Мышка', price: 500 },
+            { title: 'Ноутбук', price: 50000 },
+            { title: 'Клавиатура', price: 5000 },
+            { title: 'Монитор', price: 10000 },
+        ];
+    }
+
+    render() {
+        let goodsItems = this.goods.map(item => {
+            const goodsItem = new GoodsItem(item);
+            return goodsItem.render();
+        });
+        document.querySelector('.goods').innerHTML = goodsItems.join('');
+    }
+
+    calculateQuantity() {
+        let i = 0;
+        this.goods.forEach(function(item){
+            i += item.price; 
+        })
+        return i;
+    }
+}
+
+const list = new GoodsList();
+list.fetchData();
+list.render();
+
+//homework2---------------------------------------------------------------------------------------
+let sum = list.calculateQuantity();
+
+class Basket {
+    constructor(){
+        this.sum = 0;
+        this.goodsQuantity = 0;
+    }
+
+    layoutRender(){
+
+    }
+
+    calculateQuantity() {
+
+    }
+
+    calculateSum() {
+
+    }
+
+    clearBasket(){
+
+    }
+
+    addItem(){
+
+    }
+
+    removeItem(){
+
+    }
+}
+
+class BasketItem {
+    constructor(){
+        this.title = title;
+        this.price = price;
+        this.quantity = 0;
+    }
+    layoutRender(){
+        
+    }
+}
