@@ -13,7 +13,7 @@ const renderProduct = (a) => {
             </div>`
 };
 const renderPage = list => {
-    document.querySelector('.products').insertAdjacentHTML('beforeend', list.map(item => renderProduct(item)).join(''));
+    document.querySelector('.goods-list').insertAdjacentHTML('beforeend', list.map(item => renderProduct(item)).join(''));
 };
 
 renderPage(products);
