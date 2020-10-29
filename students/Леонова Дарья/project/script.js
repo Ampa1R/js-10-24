@@ -8,8 +8,8 @@ var goods = [
 ];
 
 
-const getGoodsItemLayout = (title, price, img) => {
-    return `
+const getGoodsItemLayout = (title, price, img) =>
+    `
         <div class="item">
         <img src=${img}>
             <h4 class="title">${title}</h4>
@@ -17,12 +17,55 @@ const getGoodsItemLayout = (title, price, img) => {
             <button class="buy"> Buy </button>
         </div>
     `;
+
+
+
+const render = (list = []) => {
+    let goodsItems = list.map(item => getGoodsItemLayout(item.name, item.price, item.img));
+    document.querySelector('.products').innerHTML = goodsItems.join(''); //для того чтобы не выводилась запятая. так как goodsItems это масив, то выводит значени через запятую. join('') - преобразует масив в строку и убирает заптую.
+};
+
+render(goods);
+
+// корзина
+
+class Basket {
+    constructor() { //создание массива корзины
+    }
+
+    sumPrice() { //сумма стоимостей всех товаров корзины
+        var sum;
+        basketInner.map(item => sum += item.price * item.count); //count - количество (штук) выбранного товара 
+        return sum;
+    }
+    pay() { } //функция оплаты
+}
+
+// элемент корзины 
+class BascketItem {
+
+    constructor() {
+    }
+
+    count() {  //счетчик количества штук каждого товара
+
+    }
+    del() {  //функция удаления товара из корзины
+
+    }
 }
 
 
-const render = (list = goods) => {
-    let goodsItems = list.map(item => getGoodsItemLayout(item.name, item.price, item.img));
-    document.querySelector('.products').innerHTML = goodsItems.join(''); //для того чтобы не выводилась запятая 
-};
+// открытие корзины
+var basketBtn = document.querySelector('.bag');
+basketBtn.onclick = function () {
+    let bascketBlock = document.querySelector('#basket');
 
-render();
+    if (bascketBlock.classList.contains('hidden')) {
+        bascketBlock.classList.remove('hidden');
+        bascketBlock.classList.add('show');
+    } else {
+        bascketBlock.classList.add('hidden');
+        bascketBlock.classList.remove('show');
+    }
+}

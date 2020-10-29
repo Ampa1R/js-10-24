@@ -1,0 +1,29 @@
+section {
+    width: 800px;
+    text-align: center;
+    margin: 0 auto;
+}
+
+h2 {
+    margin-top: 50px;
+}
+
+button {
+    border: 2px solid transparent;
+    padding: 10px;
+    background-color: wheat;
+}
+button:hover {
+    border: 2px solid black;
+}
+
+.big {
+    width: 100px;
+}
+.small {
+    width: 50px;
+}
+
+.inner {
+    width: 70px;
+}
