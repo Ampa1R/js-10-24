@@ -23,39 +23,24 @@ const request = (url, method = 'GET') => {
 }
 
 class GoodsItem {
-    constructor({ id_product, product_name = 'Нет данных', price }) {
-        this.id = id_product;
+    constructor({ product_name = 'Нет данных', price }) {
         this.title = product_name;
         this.price = price;
     }
 
     render() {
         return `
-            <div class="item" data-id="${this.id}">
+            <div class="item">
                 <h4>${this.title}</h4>
                 <p>${this.price}</p>
-                <button name="add-to-basket">Add to basket</button>
             </div>
         `;
     }
 }
 
 class GoodsList {
-    constructor(basket) {
+    constructor() {
         this.goods = [];
-        this.filteredGoods = [];
-        this.basket = basket;
-        this.fetchData();
-
-        document.querySelector('.search').addEventListener('input', (event) => {
-            this.filterGoods(event.target.value);
-        });
-    }
-
-    filterGoods(searchValue) {
-        const regexp = new RegExp(searchValue, 'i');
-        this.filteredGoods = this.goods.filter((goodsItem) => regexp.test(goodsItem.product_name));
-        this.render();
     }
 
     fetchData() {
@@ -63,8 +48,6 @@ class GoodsList {
             request('catalogData.json')
                 .then((goodsFromServer) => {
                     this.goods = goodsFromServer;
-                    this.filteredGoods = goodsFromServer;
-                    this.render();
                     resolve();
                 })
                 .catch((err) => {
@@ -74,23 +57,11 @@ class GoodsList {
     }
 
     render() {
-        let goodsItems = this.filteredGoods.map(item => {
+        let goodsItems = this.goods.map(item => {
             const goodsItem = new GoodsItem(item);
             return goodsItem.render();
         });
         document.querySelector('.goods').innerHTML = goodsItems.join('');
-
-        document.querySelector('.goods').addEventListener('click', (event) => {
-            if (event.target.name === 'add-to-basket') {
-                const id = event.target.parentElement.dataset.id;
-                const item = this.goods.find((goodsItem) => goodsItem.id_product === parseInt(id));
-                if (item) {
-                    this.basket.addItem(item);
-                } else {
-                    console.error(`Can't find element with id ${id}`);
-                }
-            }
-        });
     }
 
     calculateQuantity() {
@@ -107,7 +78,6 @@ class Basket {
         this.basketGoods = [];
         this.totalPrice = 0;
         this.countGoods = 0;
-        this.fetchBasket();
     }
 
     fetchBasket() {
@@ -186,6 +156,16 @@ class BasketItem {
     }
 }
 
-const list = new GoodsList(new Basket());
+const list = new GoodsList();
+list.fetchData()
+    .then(() => list.render());
 
-
+const basket = new Basket();
+basket.fetchBasket()
+    .then(() => {
+        basket.addItem({ id_product: 999, title: 'Мышь', price: 100 });
+        basket.addItem({ id_product: 748, title: 'Монитор', price: 200 });
+        basket.addItem({ id_product: 349, title: 'Клавиатура', price: 300 });
+        basket.removeItem(123);
+        basket.removeItem(748);
+    });
