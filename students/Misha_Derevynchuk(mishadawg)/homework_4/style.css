@@ -1,0 +1,24 @@
+body{
+    display: flex;
+    background-color: beige;
+    justify-content: space-around;
+    
+    flex-wrap: wrap;
+}
+.container{
+    flex-basis: 45%;
+    border: 1px solid black;
+    background-color: #fff;
+    padding: 16px 16px;
+    border-radius: 6px;
+    box-shadow: 4px 4px 4px black;
+}
+.btn{
+    margin: 16px;
+    padding: 16px 16px;
+    flex-basis: 10%;
+    border-radius: 6px;
+    border: none;
+    background-color: rgb(9, 135, 253);
+    box-shadow: 2px 2px 2px black;
+}
