@@ -145,7 +145,7 @@ class Basket {
                 if (basketInner[delId[1]].count > 1) {
                     counter.innerHTML = --basketInner[delId[1]].count;
                 } else if (basketInner[delId[1]].count === 1) {
-                    delete basketInner[delId[1]];
+                    const remove = basketInner.filter((item) => item.code !== basketInner[delId[1]].code);
                     let items = document.querySelectorAll('.basket-item')[delId[1]];
                     items.remove(items[delId[1]]);
                 }
