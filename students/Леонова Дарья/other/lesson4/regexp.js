@@ -20,60 +20,53 @@ if (opt2.test(text)) {
 // E - mail имеет вид mymail@mail.ru, или my.mail@mail.ru, или my - mail@mail.ru.
 // Текст произвольный.
 // Если одно из полей не прошло валидацию, необходимо выделить это поле красной рамкой и сообщить пользователю об ошибке.
+const nameMas = [], numbMas = [], emailMas = [], storyMas = [];
 
-let form = document.querySelector('form');
+const name = document.querySelector('.name').addEventListener('input', (eve) => {
+    nameMas.push(eve.target.value);
+});
+const numb = document.querySelector('.numb').addEventListener('input', (eve) => {
+    numbMas.push(eve.target.value);
+});
+const email = document.querySelector('.email').addEventListener('input', (eve) => {
+    emailMas.push(eve.target.value);
+});
+const story = document.querySelector('.text').addEventListener('input', (eve) => {
+    storyMas.push(eve.target.value);
+});
+const button = document.querySelector('.submit');
 
-class Input {
-    constructor(id, type, text = '') {
-        let item = document.createElement('input');
-        item.className = id;
-        item.placeholder = text;
-        item.type = type;
-        form.append(item);
-    }
-
-}
-
-let isName = new Input('name', 'text', 'введите имя');
-let isNumb = new Input('numb', 'text', '+ 7(000)000 - 0000');
-let isEmail = new Input('email', 'text', 'введите email');
-let isText = new Input('text', 'text', 'введите любой текст');
-let button = document.createElement('button');
-button.classList.add('submit');
-button.innerText = 'Oтправить';
-form.append(button);
-
-const checkName = /[a-zа-я]{2,8}/i; //jn 2 до 8 букв любого алфовита в любом регистре 
+const checkName = /[a-zа-я]{2,8}/ig; //jn 2 до 8 букв любого алфовита в любом регистре 
 const checkNumb = /\+7[\d]{10}/; //начиная с +7 еще 10 цифр подряд
 const checkEmail = /[a-z0-9]+@[a-z]+\.[a-z]+/; //набор букв и цифр , затем @, затем опять буквы, точка и еще буквы. регистрозависимое поле
-const checkText = /[a-zа-я0-9\s\S]{2,20}\b/i; //от 2 до 20 любых символов. не регистрозависимое поле 
+const checkText = /[a-zа-я0-9\s\S]{5,100}/ig; //от 2 до 20 любых символов. не регистрозависимое поле 
 
 button.onclick = function () {
-    if (checkName.test(isName)) {
-        if (checkNumb.test(isNumb)) {
-            if (checkEmail.test(isEmail)) {
-                if (checkText.test(isText)) {
-                    console.loge('Ok');
-                } else {
-                    let inpText = document.querySelector('.text');
-                    inpText.classList.add('red');
-                    console.log('4');
-                }
-            } else {
-                let inpEmail = document.querySelector('.email');
-                inpEmail.classList.add('red');
-                console.log('3');
-            }
-        } else {
-            let inpNumb = document.querySelector('.numb');
-            inpNumb.classList.add('red');
-            console.log('2');
-        }
+    const errorName = document.querySelector('.name');
+    const errorNumb = document.querySelector('.numb');
+    const errorEmail = document.querySelector('.email');
+    const errorStory = document.querySelector('.text');
+
+    if (!checkName.test(nameMas[nameMas.length - 1])) {
+        errorName.classList.add('red');
     } else {
-        const inpName = document.querySelector('.name');
-        inpName.classList.add('red');
-        console.log('1');
-    }
+        errorName.classList.remove('red');
+    };
+    if (!checkNumb.test(numbMas[numbMas.length - 1])) {
+        errorNumb.classList.add('red');
+    } else {
+        errorNumb.classList.remove('red');
+    };
+    if (!checkEmail.test(emailMas[emailMas.length - 1])) {
+        errorEmail.classList.add('red');
+    } else {
+        errorEmail.classList.remove('red');
+    };
+    if (!checkText.test(storyMas[storyMas.length - 1])) {
+        errorStory.classList.add('red');
+    } else {
+        errorStory.classList.remove('red');
+    };
 }
 
 
