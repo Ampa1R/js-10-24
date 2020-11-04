@@ -54,8 +54,13 @@ class GoodList {
         
     }
     sumGoods() {
-       return this.goods.ruduce((acc, curr) => acc + curr.price, 0);
-    }
+        let costItem = 0;
+        for (i = 0; i < this.goods.length; i++) {
+            costItem += this.goods[i].price;
+        }
+        return costItem;
+
+}
 }
 
 const list = new GoodList();
