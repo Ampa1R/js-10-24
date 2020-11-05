@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-shop</title>
+    
+    <script src="./script.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <div id="app">
+        <header class="header_section">
+            <a href="/" class="logo header_fonts">EShop</a>
+            <input v-model="searchValue" type="text" class="search" placeholder="Поиск" />
+            <button class="cart-button" v-on:click="clickOnCart">Корзина</button>
+        </header>
+        <main>
+            <!--Position absolute,main-relative,будет появляться под кнопкой.-->
+            <div v-if = "clickOnCart() == true" class="real_cart item">
+                <ul class="cart_array"> 
+                    <li class="cart_position">Something</li>
+                    <li class="cart_position">Something</li>
+                    <li class="cart_position">Something</li>
+                </ul>
+            </div>
+
+            <div class="goods">
+                <div class="item" v-for="item in filteredGoods">
+                    <img src="http://placehold.it/150x150/" alt ="/">
+                    <h4 class="title_of_card">{{item.product_name}}</h4>
+                    <p class="description_of_card">{{item.price}}</p>
+                    <button class="card_button btn" type="button" v-on:click="() => addItem(item)">Add to basket</button>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
+
