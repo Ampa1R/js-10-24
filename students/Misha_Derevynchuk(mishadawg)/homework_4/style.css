@@ -13,11 +13,8 @@ body{
     border-radius: 6px;
     box-shadow: 4px 4px 4px black;
 }
-<<<<<<< HEAD
 .btn{
-=======
-.reg_rep_btn{
->>>>>>> master
+
     margin: 16px;
     padding: 16px 16px;
     flex-basis: 10%;
