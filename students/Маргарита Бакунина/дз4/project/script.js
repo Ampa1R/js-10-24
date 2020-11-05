@@ -3,21 +3,21 @@ const API = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-a
 const request = (url, method = 'GET') => {
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
-    
+
         xhr.open(method, `${API}/${url}`);
-    
+
         xhr.onreadystatechange = () => {
             if (xhr.readyState === 4) {
                 if (xhr.status === 200) {
                     resolve(JSON.parse(xhr.responseText));
-                } else if(xhr.status === 404) {
+                } else if (xhr.status === 404) {
                     reject('Not Found error');
                 } else {
                     reject('Unknown error');
                 }
             }
         }
-    
+
         xhr.send();
     });
 }
@@ -31,11 +31,13 @@ class GoodsItem {
 
     render() {
         return `
-            <div class="item" data-id="${this.id}">
-                <h4>${this.title}</h4>
-                <p>${this.price}</p>
-                <button name="add-to-basket">Add to basket</button>
-            </div>
+        <div class="item card p-4" style="width: 16rem;">
+        
+        <h4 class="card-title">${this.title}</h4>
+        <p class="card-text">${this.price} руб.</p>
+        
+        <a href="#" name="add-to-basket" class="btn btn-warning">Купить</a>
+    </div>
         `;
     }
 }
@@ -51,6 +53,8 @@ class GoodsList {
             this.filterGoods(event.target.value);
         });
     }
+
+
 
     filterGoods(searchValue) {
         const regexp = new RegExp(searchValue, 'i');
@@ -94,7 +98,7 @@ class GoodsList {
     }
 
     calculateQuantity() {
-        
+
     }
 
     calculatePrice() {
@@ -186,24 +190,25 @@ class BasketItem {
     }
 }
 
-const list = new GoodsList(new Basket());
+const list = new GoodsList();
+list.fetchData()
+    .then(() => list.render());
+
+const basket = new Basket();
+basket.fetchBasket()
+    .then(() => {
+        basket.addItem({ id_product: 999, title: 'Мышь', price: 100 });
+        basket.addItem({ id_product: 748, title: 'Монитор', price: 200 });
+        basket.addItem({ id_product: 349, title: 'Клавиатура', price: 300 });
+        basket.removeItem(123);
+        basket.removeItem(748);
+    });
 
 
 
 
-/*----------------------------hw4*/
 
-let text1 = `
-    Lorem ipsu'm dolo'r sit ame't, consectetur adipisicing elit, sed do eiusmod
-tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-quis 'nostrud exercitation ullamco laboris' nisi ut aliquip ex ea commodo
-consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-proident, sunt in 'culpa qui officia deserunt mollit anim id est laborum'.
-`;
-//console.log(text1);
-let regexp = /[\s\.]\'|\'[\s\.]/gm;
-let text2 = text1.replace(regexp, function(str){
-    return str.replace(/\'/,"\"");
-})
-//console.log(text2);
+
+
+
+

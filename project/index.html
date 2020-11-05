@@ -5,17 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E-shop</title>
     <script src="script.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,700&display=swap&subset=cyrillic" rel="stylesheet">
     <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-    <header>
-        <a href="/" class="logo">E-shop</a>
-        <input type="text" class="search" placeholder="Поиск" />
-        <button class="cart-button">Корзина</button>
-    </header>
-    <main>
-        <div class="goods"></div>
-    </main>
+    <div id="app">
+        <header>
+            <a href="/" class="logo">E-shop</a>
+            <input v-model="searchValue" type="text" class="search" placeholder="Поиск" />
+            <button class="cart-button">Корзина</button>
+        </header>
+        <main>
+            <div class="goods">
+                <div class="item" v-for="item in filteredGoods">
+                    <h4>{{item.product_name}}</h4>
+                    <p>{{item.price}}</p>
+                    <button v-on:click="() => addItem(item)">Add to basket</button>
+                </div>
+            </div>
+        </main>
+    </div>
 </body>
 </html>
