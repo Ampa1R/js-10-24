@@ -1,0 +1,30 @@
+    {
+        "name": "bRANDED sHOE",
+        "price": 300,
+        "img": "img/shoes.jpg"
+    },
+    {
+        "name": "bRANDED tEES",
+        "price": 300,
+        "img": "img/tshort.jpg"
+    },
+    {
+        "name": "bRANDED purse",
+        "price": 300,
+        "img": "img/purse.jpg"
+    },
+    {
+        "name": "bRANDED tsort",
+        "price": 300,
+        "img": "img/tshort1.png"
+    },
+    {
+        "name": "EMS Women bAG",
+        "price": 300,
+        "img": "img/bag.jpg"
+    },
+    {
+        "name": "bRANDED CARGOS",
+        "price": 300,
+        "img": "img/short.png"
+    }

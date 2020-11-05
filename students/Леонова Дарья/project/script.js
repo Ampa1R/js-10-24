@@ -1,71 +1,162 @@
-var goods = [
-    { name: 'bRANDED sHOE', price: 300, img: 'img/shoes.jpg' },
-    { name: 'bRANDED tEES', price: 300, img: 'img/tshort.jpg' },
-    { name: 'bRANDED purse', price: 300, img: 'img/purse.jpg' },
-    { name: 'bRANDED tsort', price: 300, img: 'img/tshort1.png' },
-    { name: 'EMS Women bAG', price: 300, img: 'img/bag.jpg' },
-    { name: 'bRANDED CARGOS', price: 300, img: 'img/short.png' }
-];
+const API = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses/';
 
+const request = (url, method = 'GET') => {
+    return new Promise((res, rej) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', `${API}/${url}`);
+        xhr.onreadystatechange = () => {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    res(JSON.parse(xhr.responseText));
+                } else if (xhr.status === 404) { //если ошибка404
+                    rej('Not Found error');
+                } else {
+                    rej('Unknown error');
+                }
+            }
+        }
 
-const getGoodsItemLayout = (title, price, img) =>
-    `
-        <div class="item">
-        <img src=${img}>
-            <h4 class="title">${title}</h4>
-            <p>$${price}</p>
-            <button class="buy"> Buy </button>
-        </div>
-    `;
+        xhr.send();
 
-
-
-const render = (list = []) => {
-    let goodsItems = list.map(item => getGoodsItemLayout(item.name, item.price, item.img));
-    document.querySelector('.products').innerHTML = goodsItems.join(''); //для того чтобы не выводилась запятая. так как goodsItems это масив, то выводит значени через запятую. join('') - преобразует масив в строку и убирает заптую.
-};
-
-render(goods);
-
-// корзина
-
-class Basket {
-    constructor() { //создание массива корзины
-    }
-
-    sumPrice() { //сумма стоимостей всех товаров корзины
-        var sum;
-        basketInner.map(item => sum += item.price * item.count); //count - количество (штук) выбранного товара 
-        return sum;
-    }
-    pay() { } //функция оплаты
+    });
 }
 
-// элемент корзины 
-class BascketItem {
+const main = new Vue({
+    el: '#main',
+    data: {
+        goods: [], //массив товаров
+        basket: [], //массив корзины
+        search: '', //запрос в строке поиска
+    },
+    mounted() {
+        this.fetchData(); //вызывает массив товаров из каталога 
+        this.fetchBasket(); //вызывает массив корзины
+    },
+    methods: {
+        //товары
+        fetchData() {
+            return new Promise((res, rej) => {
+                request('catalogData.json')
+                    .then(
+                        (goodsFromServer) => {
+                            this.goods = goodsFromServer;
+                            res();
+                        })
+                    .catch((err) => {
+                        console.error(err);
+                    });
+            })
 
-    constructor() {
+        },
+        //корзина
+        fetchBasket() {
+            return new Promise((res, rej) => {
+                request('getBasket.json')
+                    .then(
+                        (basketFromServer) => {
+                            this.basket = basketFromServer.contents;
+                            res();
+                        })
+                    .catch((err) => {
+                        console.error(err);
+                    });
+            })
+
+        },
+        //добавление элементов
+        addItem(item) {
+            return new Promise((res, rej) => {
+                request('addToBasket.json', 'Get')
+                    .then((data) => {
+                        if (data.result === 1) {
+                            this.basket.push(item);
+                            console.log(this.basket)
+                        } else {
+                            console.error('addItem result != 1');
+                        }
+                        res();
+                    })
+                    .catch((err) => {
+                        console.error(err);
+                    })
+            });
+        },
+        //удаление элементов
+        removeItem(id) {
+            return new Promise((res, rej) => {
+                request('deleteFromBasket.json', 'Get')
+                    .then((data) => {
+                        if (data.result === 1) {
+                            this.basket = this.basket.filter((product) => product.id_product !== id);
+                        } else {
+                            console.error('removeItem result != 1');
+                        }
+                        res();
+                    })
+                    .catch((err) => {
+                        console.error(err);
+                    });
+            });
+        }
+    },
+    computed: {
+        //фильтрация по поисковой строке
+        filtered() {
+            const regexp = new RegExp(this.search, 'i');
+            return this.goods.filter((goodsItem) => regexp.test(goodsItem.product_name));
+        },
+        //подсчет суммы покупок
+        totalPrice() {
+            return this.basket.reduce((acc, cur) => acc + (cur.price * cur.count), 0);
+        }
+
     }
-
-    count() {  //счетчик количества штук каждого товара
-
-    }
-    del() {  //функция удаления товара из корзины
-
-    }
-}
+});
 
 
-// открытие корзины
-var basketBtn = document.querySelector('.bag');
-basketBtn.onclick = function () {
-    let bascketBlock = document.querySelector('#basket');
 
-    if (bascketBlock.classList.contains('hidden')) {
-        bascketBlock.classList.remove('hidden');
-        bascketBlock.classList.add('show');
-    } else {
-        bascketBlock.classList.add('hidden');
-        bascketBlock.classList.remove('show');
-    }
-}
+
+
+
+
+
+
+
+
+
+// const buttons = document.querySelectorAll('.buy');
+// var i = 0;
+
+// // событие при нажатии на кнопку покупки
+// buttons.forEach(btn => {
+//     btn.setAttribute('id', 'btn-' + i);
+//     i++;
+//     btn.onclick = function (eve) {
+//         // newAdd.sumPrice();
+//         var elemId = eve.target.id;
+//         var getId = elemId.split('-');
+//         console.log(basketInner);
+//         if (basketInner.length >= 1) { //когда в коззине есть хотябы 1 элемент
+//             for (let item of basketInner) {// перебор корзины
+//                 if (item.id_product/*code*/ === list.fetchData.id_product/* goods[getId[1]].code*/) {
+//                     item.count++;
+//                     // console.log(basketInner.indexOf(item));
+//                     let counter = document.querySelectorAll('.count')[basketInner.indexOf(item)];
+//                     // console.log('1');
+//                     counter.innerHTML = item.count;
+//                     return newAdd.sumPrice(), item.count, newAdd.toServer();
+//                 }
+//             } newAdd = new Basket(getId[1]);
+//             // console.log('2');
+//             return newAdd.render(), newAdd.sumPrice(), newAdd.toServer(), newAdd.del();
+//         } else {
+//             newAdd = new Basket(getId[1]);
+//             // console.log('3');
+//             return newAdd.render(), newAdd.sumPrice(), newAdd.toServer(), newAdd.del();
+//         }
+//     }
+// });
+
+
+
+
