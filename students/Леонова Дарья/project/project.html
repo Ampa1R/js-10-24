@@ -20,16 +20,16 @@
                     <li class="list-item"><a href="#" class="item-link">list-item#2</a></li>
                     <li class="list-item"><a href="#" class="item-link">list-item#3</a></li>
                 </ul>
-                <input class="search-input" v-modal="search" type="search" placeholder="Поиск">
-                <button class="basket">Basket</button>
+                <input class="search-input" v-model="search" type="search" placeholder="Поиск">
+                <button class="basket" v-on:click="toBasket">Basket</button>
             </nav>
         </header>
 
-        <section class="basket-block hidden">
-            <p class="total">Общая сумма вашего заказа: <span class="total-sum"></span></p>
-            <button class="total-buy">Pay</button>
-            <div id="basket">
-
+        <section class="basket-block" v-if="show">
+            <p class="total">Общая сумма вашего заказа: {{totalPrice}}$</p>
+            <div class="basket-item" v-for='item in basket'>
+                <h4 class="title basket-title">{{item.product_name}}</h4>
+                <p>${{item.price}}</p>
             </div>
         </section>
 
@@ -39,6 +39,7 @@
                 <p>${{item.price}}</p>
                 <button class="buy" v-on:click="() => addItem(item)"> Buy </button>
             </div>
+            <div class="no-product" v-if="filtered.length === 0">Нет товаров</div>
         </section>
 
     </div>

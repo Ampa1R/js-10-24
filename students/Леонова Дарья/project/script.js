@@ -27,6 +27,7 @@ const main = new Vue({
         goods: [], //массив товаров
         basket: [], //массив корзины
         search: '', //запрос в строке поиска
+        show: false,
     },
     mounted() {
         this.fetchData(); //вызывает массив товаров из каталога 
@@ -97,7 +98,12 @@ const main = new Vue({
                         console.error(err);
                     });
             });
+        },
+        //показ корзины
+        toBasket() {
+            return this.show = !this.show
         }
+
     },
     computed: {
         //фильтрация по поисковой строке
@@ -107,7 +113,7 @@ const main = new Vue({
         },
         //подсчет суммы покупок
         totalPrice() {
-            return this.basket.reduce((acc, cur) => acc + (cur.price * cur.count), 0);
+            return this.basket.reduce((acc, cur) => acc + cur.price, 0);
         }
 
     }
@@ -120,42 +126,6 @@ const main = new Vue({
 
 
 
-
-
-
-
-// const buttons = document.querySelectorAll('.buy');
-// var i = 0;
-
-// // событие при нажатии на кнопку покупки
-// buttons.forEach(btn => {
-//     btn.setAttribute('id', 'btn-' + i);
-//     i++;
-//     btn.onclick = function (eve) {
-//         // newAdd.sumPrice();
-//         var elemId = eve.target.id;
-//         var getId = elemId.split('-');
-//         console.log(basketInner);
-//         if (basketInner.length >= 1) { //когда в коззине есть хотябы 1 элемент
-//             for (let item of basketInner) {// перебор корзины
-//                 if (item.id_product/*code*/ === list.fetchData.id_product/* goods[getId[1]].code*/) {
-//                     item.count++;
-//                     // console.log(basketInner.indexOf(item));
-//                     let counter = document.querySelectorAll('.count')[basketInner.indexOf(item)];
-//                     // console.log('1');
-//                     counter.innerHTML = item.count;
-//                     return newAdd.sumPrice(), item.count, newAdd.toServer();
-//                 }
-//             } newAdd = new Basket(getId[1]);
-//             // console.log('2');
-//             return newAdd.render(), newAdd.sumPrice(), newAdd.toServer(), newAdd.del();
-//         } else {
-//             newAdd = new Basket(getId[1]);
-//             // console.log('3');
-//             return newAdd.render(), newAdd.sumPrice(), newAdd.toServer(), newAdd.del();
-//         }
-//     }
-// });
 
 
 
