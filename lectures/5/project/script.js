@@ -189,21 +189,3 @@ class BasketItem {
 const list = new GoodsList(new Basket());
 
 
-
-
-/*----------------------------hw4*/
-
-let text1 = `
-    Lorem ipsu'm dolo'r sit ame't, consectetur adipisicing elit, sed do eiusmod
-tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-quis 'nostrud exercitation ullamco laboris' nisi ut aliquip ex ea commodo
-consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-proident, sunt in 'culpa qui officia deserunt mollit anim id est laborum'.
-`;
-//console.log(text1);
-let regexp = /[\s\.]\'|\'[\s\.]/gm;
-let text2 = text1.replace(regexp, function(str){
-    return str.replace(/\'/,"\"");
-})
-//console.log(text2);

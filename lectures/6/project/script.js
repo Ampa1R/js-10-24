@@ -22,50 +22,6 @@ const request = (url, method = 'GET') => {
     });
 }
 
-Vue.component('goods', {
-    props: ['goods'],
-    template: `
-        <div class="goods">
-            <goods-item 
-                v-for="item, index in goods"
-                v-bind:key="item.id_product"
-                v-bind:item="item" 
-                v-on:add-item="handleAddItem"
-            />
-            <div v-if="goods.length === 0">Нет товаров</div>
-        </div>
-    `,
-    methods: {
-        handleAddItem(item) {
-            this.$emit('add-item', item);
-        }
-    }
-});
-
-Vue.component('goods-item', {
-    props: ['item'],
-    template: `
-        <div class="item">
-            <h4>{{item.product_name}}</h4>
-            <p>{{item.price}}</p>
-            <button v-on:click="handleButtonClick">Add to basket</button>
-        </div>
-    `,
-    methods: {
-        handleButtonClick() {
-            this.$emit('add-item', this.item) ;
-        }
-    }
-});
-
-Vue.component('cart', {
-
-});
-
-Vue.component('cart-item', {
-
-});
-
 const app = new Vue({
     el: '#app',
     data: {

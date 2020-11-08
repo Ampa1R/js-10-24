@@ -1,6 +1,26 @@
+const API = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses';
+
+const request = (url) => {
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', `${API}/${url}`);
+        xhr.onreadystatechange = () => {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    resolve(JSON.parse(xhr.responseText));
+                } else if(xhr.status === 404) {
+                    reject('Not Found Error');
+                } else {
+                    reject('Unknown error');
+                }
+            }
+        }
+        xhr.send();
+    });
+}
 class GoodsItem {
-    constructor(title, price) {
-        this.title = title;
+    constructor({product_name = 'Not found', price}) {
+        this.title = product_name;
         this.price = price;
 
     }
@@ -17,42 +37,67 @@ class GoodList {
         this.goods = [];
     }
     fetchGoods() {
-        this.goods = [
-            { title: 'Shirt', price: 150 },
-            { title: 'Socks', price: 50 },
-            { title: 'Jacket', price: 350 },
-            { title: 'Shose', price: 250 }
-        ];
+        return new Promise((resolve, reject) => {
+            request('catalogData.json')
+                .then((goodsFromServer) => {
+                this.goods = goodsFromServer;
+                resolve();
+            });
+        })
     }
     render() {
-        let ListHtml = '';
-        this.goods.forEach(good => {
-            const goodItem = new GoodsItem(good.title, good.price);
-            ListHtml += goodItem.render();
+        let goodItems = this.goods.map(item =>{
+            const goodItem = new GoodsItem(item);
+            return goodItem.render();
         });
-        document.querySelector('.goods-list').innerHTML = ListHtml;
+        document.querySelector('.goods-list').innerHTML = goodItems.join('');
+        
     }
     sumGoods() {
-        this.CountPirce = function(goods) {
-            let costItem = 0;
-            for (i = 0; i < goods.length; i++) {
-                costItem += goods[i].price;
-            }
-            return costItem;
+        let costItem = 0;
+        for (i = 0; i < this.goods.length; i++) {
+            costItem += this.goods[i].price;
         }
-       
-    }
+        return costItem;
+
+}
 }
 
 const list = new GoodList();
-list.fetchGoods();
-list.render();
-list.sumGoods();
+list.fetchGoods()
+    .then(() => list.render());
+//list.sumGoods();
 
 //пустые классы для корзины
+/* class Bascet {
+    fetchBascet() {
+
+    }
+
+    render() {
+
+    }
+    addItem(id) {
+
+    }
+    removeItem() {
+
+    }
+
+    calculatePrice() {
+
+    }
+}
+
 class BascetItem {
 
-}
-class BascetList {
+    render() {
 
-}
+    }
+    changeQuantity() {
+
+    }
+    removeItem() {
+
+    }
+} */

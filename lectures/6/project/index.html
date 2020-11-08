@@ -23,7 +23,14 @@
             </div>
         </header>
         <main>
-            <goods v-bind:goods="filteredGoods" v-on:add-item="(item) => addItem(item)" />
+            <div class="goods">
+                <div class="item" v-for="item in filteredGoods">
+                    <h4>{{item.product_name}}</h4>
+                    <p>{{item.price}}</p>
+                    <button v-on:click="() => addItem(item)">Add to basket</button>
+                </div>
+                <div v-if="filteredGoods.length === 0">Нет товаров</div>
+            </div>
         </main>
     </div>
 </body>

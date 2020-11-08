@@ -41,7 +41,8 @@ nav {
     grid-template-columns: 1fr 1fr 1fr;
 }
 
-.item {
+.item,
+.basket-item {
     border-bottom: 3px solid rgba(0, 0, 0, 0.1);
     padding: 40px 10px;
     display: flex;
@@ -54,7 +55,9 @@ nav {
     text-transform: uppercase;
 }
 
-.buy {
+.buy,
+.del,
+.total-buy {
     padding: 10px 20px;
     border: 3px solid transparent;
     background-color: lightskyblue;
@@ -67,6 +70,19 @@ nav {
 }
 
 #basket {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.hidden {
+    display: none;
+}
+
+.show {
+    display: block;
+}
+
+.basket-block {
     border: 3px solid black;
     border-radius: 10px;
     background-color: lightblue;
@@ -74,11 +90,4 @@ nav {
     margin: 0 auto;
     margin-top: 10px;
     width: 800px;
-}
-
-.hidden {
-    display: none;
-}
-.show {
-    display: block;
 }
