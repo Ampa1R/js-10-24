@@ -1,9 +1,15 @@
 nav {
     width: 1200px;
     margin: 0 auto;
+    padding-bottom: 10px;
     display: flex;
     justify-content: space-around;
     border-bottom: 1px solid lightskyblue;
+}
+
+.container {
+    margin: 0 auto;
+    width: 1200px;
 }
 
 .list {
@@ -23,10 +29,12 @@ nav {
     color: gray;
 }
 
-.bag {
-    font-size: 30px;
-    width: 50px;
-    fill: lightskyblue;
+.basket {
+    font-size: 20px;
+    background-color: lightskyblue;
+    padding: 5px 15px;
+    height: 35px;
+    align-self: center;
 }
 
 .bag:hover {
@@ -35,14 +43,14 @@ nav {
 
 .products {
     padding-top: 50px;
-    width: 1200px;
+    width: 900px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    float: left;
+    grid-template-columns: 1fr 1fr;
 }
 
-.item,
-.basket-item {
+.item {
     border-bottom: 3px solid rgba(0, 0, 0, 0.1);
     padding: 40px 10px;
     display: flex;
@@ -74,20 +82,21 @@ nav {
     grid-template-columns: repeat(4, 1fr);
 }
 
-.hidden {
-    display: none;
-}
-
-.show {
-    display: block;
-}
-
 .basket-block {
-    border: 3px solid black;
+    padding: 15px;
     border-radius: 10px;
     background-color: lightblue;
     box-sizing: border-box;
-    margin: 0 auto;
-    margin-top: 10px;
-    width: 800px;
+    width: 300px;
+    float: right;
+    margin-top: 50px;
+}
+
+.basket-item {
+    display: flex;
+    align-items: center;
+}
+
+.basket-title {
+    margin-right: 20px;
 }
