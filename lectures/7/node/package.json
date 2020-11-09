@@ -1,0 +1,19 @@
+{
+  "name": "node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "script.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "jquery": "^3.5.1"
+  },
+  "devDependencies": {
+    "is-odd": "^3.0.1"
+  },
+  "scripts": {
+    "start": "node script",
+    "server": "node server"
+  },
+  "author": "",
+  "license": "ISC"
+}

@@ -23,15 +23,13 @@ import Cart from "./components/Cart.vue";
 import Error from "./components/Error.vue";
 import './someStyles.css';
 
-const API = 'http://localhost:3000';
+const API = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses';
 
-const request = (url, method = 'GET', data) => {
+const request = (url, method = 'GET') => {
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
     
         xhr.open(method, `${API}/${url}`);
-
-        xhr.setRequestHeader('Content-Type', 'application/json');
     
         xhr.onreadystatechange = () => {
             if (xhr.readyState === 4) {
@@ -45,7 +43,7 @@ const request = (url, method = 'GET', data) => {
             }
         }
     
-        xhr.send(JSON.stringify(data));
+        xhr.send();
     });
 }
 
@@ -73,7 +71,7 @@ export default {
   methods: {
     fetchData() {
       return new Promise((resolve) => {
-        request("catalog")
+        request("catalogData.json")
           .then((goodsFromServer) => {
             this.goods = goodsFromServer;
             resolve();
@@ -86,9 +84,9 @@ export default {
     },
     fetchBasket() {
       return new Promise((resolve) => {
-        request("cart")
+        request("getBasket.json")
           .then((basketGoodsFromServer) => {
-            this.basketGoods = basketGoodsFromServer;
+            this.basketGoods = basketGoodsFromServer.contents;
             resolve();
           })
           .catch((err) => {
@@ -99,7 +97,7 @@ export default {
     },
     addItem(item) {
       return new Promise((resolve) => {
-        request("addToCart", "POST", item)
+        request("addToBasket.json", "GET")
           .then((data) => {
             if (data.result === 1) {
               this.basketGoods.push(item);
