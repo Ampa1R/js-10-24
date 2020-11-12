@@ -61,6 +61,34 @@ app.post('/addToCart', (request, response) => {
     });
 });
 
+app.delete('/remove/:id', (request, response) => {
+    fs.readFile('./cart.json', 'utf-8', (err, data) => {
+        if (err) {
+            console.log('Read cart.json Failed', e);
+            response.status(500).json({ result: 0 });
+            return;
+        }
+
+        const cart = JSON.parse(data);
+
+        const itemId = request.params.id;
+
+        const filteredCart = cart.filter(
+            (product) => product.id_product !== parseInt(itemId)
+        );
+
+        fs.writeFile('./cart.json', JSON.stringify(filteredCart), (err) => {
+            if (err) {
+                console.log('Write cart.json Failed', e);
+                response.status(500).json({ result: 0 });
+                return;
+            }
+
+            response.json({ result: 1 });
+        })
+    });
+});
+
 app.listen('3000', () => {
     console.log('Server is running @ 3000');
 });

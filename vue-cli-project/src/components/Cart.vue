@@ -7,6 +7,7 @@
     >
       <h4>{{ item.product_name }}</h4>
       <p>{{ item.price }}</p>
+      <button @click="$emit('remove-item', item.id_product)">remove</button>
     </div>
   </div>
 </template>
