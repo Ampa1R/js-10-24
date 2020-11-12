@@ -37,10 +37,6 @@ nav {
     align-self: center;
 }
 
-.bag:hover {
-    fill: blue;
-}
-
 .products {
     padding-top: 50px;
     width: 900px;

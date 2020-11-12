@@ -1,9 +1,9 @@
-const API = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses/';
+const API = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses';
 
 const request = (url, method = 'GET') => {
     return new Promise((res, rej) => {
         const xhr = new XMLHttpRequest();
-        xhr.open('GET', `${API}/${url}`);
+        xhr.open(method, `${API}/${url}`);
         xhr.onreadystatechange = () => {
             if (xhr.readyState === 4) {
                 if (xhr.status === 200) {
@@ -94,22 +94,6 @@ Vue.component('basket-item', {
         }
     },
     methods: {
-    },
-});
-
-Vue.component('search', {
-    template: `
-    <input v-model="search" v-on:keydown="isSearching" type="text" class="search" placeholder="Поиск">  
-     `,
-    data() {
-        return {
-            search: '',
-        }
-    },
-    methods: {
-        isSearching() {
-            return this.$emit('filtered', this.search);
-        },
     },
 });
 
@@ -221,5 +205,3 @@ const main = new Vue({
 
 
 
-
- // < p class= "total" > Общая сумма вашего заказа: {{ priceCalc }} $</p >
