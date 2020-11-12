@@ -57,3 +57,19 @@ header {
     border-radius: 5px;
     padding: 10px;
 }
+
+.cart {
+    position: absolute;
+    width: 300px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+    background: #fff;
+    padding: 10px 15px;
+    top: 70px;
+    right: 30px;
+  }
+  .cart-item {
+    margin-bottom: 10px;
+  }
+  .err{
+    background-color: red;
+  }
