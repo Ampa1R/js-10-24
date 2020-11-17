@@ -66,7 +66,7 @@ Vue.component('cart-item', {
 
 });
 
-const app = new Vue({
+new Vue({
     el: '#app',
     data: {
         goods: [],

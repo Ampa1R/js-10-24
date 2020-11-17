@@ -21,189 +21,170 @@ const request = (url, method = 'GET') => {
         xhr.send();
     });
 }
+Vue.component('servererr', {
+    props: ['serr'],
+    template: `
+        <div class = "err">{{serr}}</div>
+    `,
+});
 
-class GoodsItem {
-    constructor({ id_product, product_name = 'Нет данных', price }) {
-        this.id = id_product;
-        this.title = product_name;
-        this.price = price;
+
+Vue.component('goods', {
+    props: ['goods'],
+    template: `
+        <div class="goods">
+            <goods-item 
+                v-for="item, index in goods"
+                v-bind:key="item.id_product"
+                v-bind:item="item" 
+                v-on:add-item="handleAddItem"
+            />
+            <div v-if="goods.length === 0">Нет товаров</div>
+        </div>
+    `,
+    methods: {
+        handleAddItem(item) {
+            this.$emit('add-item', item);
+        }
     }
+});
 
-    render() {
-        return `
-            <div class="item" data-id="${this.id}">
-                <h4>${this.title}</h4>
-                <p>${this.price}</p>
-                <button name="add-to-basket">Add to basket</button>
-            </div>
-        `;
+Vue.component('goods-item', {
+    props: ['item'],
+    template: `
+        <div class="item">
+            <h4>{{item.product_name}}</h4>
+            <p>{{item.price}}</p>
+            <button v-on:click="handleButtonClick">Add to basket</button>
+        </div>
+    `,
+    methods: {
+        handleButtonClick() {
+            this.$emit('add-item', this.item) ;
+        }
     }
-}
+});
 
-class GoodsList {
-    constructor(basket) {
-        this.goods = [];
-        this.filteredGoods = [];
-        this.basket = basket;
+Vue.component('cart', {
+    props: ['basket'],
+    template: `
+        <div class="cart">
+            <cart-item
+                v-for="item in basket"
+                v-bind:key="item.id_product"
+                v-bind:item="item"
+            />
+            <div v-if="basket.length === 0">Корзина пуста</div> 
+        </div>
+    `,
+    methods: {
+
+    }
+});
+
+Vue.component('cart-item', {
+    props: ['item'],
+    template: `
+        <div class="cart-item">
+            <h4>{{item.product_name}}</h4>
+            <p>{{item.price}}</p>
+        </div>
+    `,
+    methods: {
+
+    }
+});
+
+Vue.component('searching', {
+    props: [''],
+    template: `
+        <input type="text" class="search" placeholder="Поиск" />
+    `,
+});
+
+const app = new Vue({
+    el: '#app',
+    data: {
+        goods: [],
+        basketGoods: [],
+        searchValue: '',
+        isCartVisible: false,
+        serverErr: "",
+    },
+    mounted() {
         this.fetchData();
-
-        document.querySelector('.search').addEventListener('input', (event) => {
-            this.filterGoods(event.target.value);
-        });
-    }
-
-    filterGoods(searchValue) {
-        const regexp = new RegExp(searchValue, 'i');
-        this.filteredGoods = this.goods.filter((goodsItem) => regexp.test(goodsItem.product_name));
-        this.render();
-    }
-
-    fetchData() {
-        return new Promise((resolve, reject) => {
-            request('catalogData.json')
-                .then((goodsFromServer) => {
-                    this.goods = goodsFromServer;
-                    this.filteredGoods = goodsFromServer;
-                    this.render();
-                    resolve();
-                })
-                .catch((err) => {
-                    console.error(err);
-                });
-        })
-    }
-
-    render() {
-        let goodsItems = this.filteredGoods.map(item => {
-            const goodsItem = new GoodsItem(item);
-            return goodsItem.render();
-        });
-        document.querySelector('.goods').innerHTML = goodsItems.join('');
-
-        document.querySelector('.goods').addEventListener('click', (event) => {
-            if (event.target.name === 'add-to-basket') {
-                const id = event.target.parentElement.dataset.id;
-                const item = this.goods.find((goodsItem) => goodsItem.id_product === parseInt(id));
-                if (item) {
-                    this.basket.addItem(item);
-                } else {
-                    console.error(`Can't find element with id ${id}`);
-                }
-            }
-        });
-    }
-
-    calculateQuantity() {
-        
-    }
-
-    calculatePrice() {
-        return this.goods.reduce((acc, curr) => acc + curr.price, 0);
-    }
-}
-
-class Basket {
-    constructor() {
-        this.basketGoods = [];
-        this.totalPrice = 0;
-        this.countGoods = 0;
         this.fetchBasket();
+    },
+    methods: {
+        fetchData() {
+            return new Promise((resolve, reject) => {
+                request('catalogData.json')
+                    .then((goodsFromServer) => {
+                        this.goods = goodsFromServer;
+                        resolve();
+                    })
+                    .catch((err) => {
+                        serverErr = err;
+                        console.error(err);
+                    });
+            })
+        },
+        fetchBasket() {
+            return new Promise((resolve, reject) => {
+                request('getBasket.json')
+                    .then((basketGoodsFromServer) => {
+                        this.basketGoods = basketGoodsFromServer.contents;
+                        resolve();
+                    })
+                    .catch((err) => {
+                        serverErr = err;
+                        console.error(err);
+                    });
+            })
+        },
+        addItem(item) {
+            return new Promise((resolve, reject) => {
+                request('addToBasket.json', 'GET')
+                    .then((data) => {
+                        if (data.result === 1) {
+                            this.basketGoods.push(item);
+                            console.log(this.basketGoods);
+                        } else {
+                            console.error('addItem result != 1');
+                        }
+                        resolve();
+                    })
+                    .catch((err) => {
+                        serverErr = err;
+                        console.error(err);
+                    });
+            });
+        },
+        removeItem(id) {
+            return new Promise((resolve, reject) => {
+                request('deleteFromBasket.json', 'GET')
+                    .then((data) => {
+                        if (data.result === 1) {
+                            this.basketGoods = this.basketGoods.filter((product) => product.id_product !== id);
+                        } else {
+                            console.error('removeItem result != 1');
+                        }
+                        resolve();
+                    })
+                    .catch((err) => {
+                        serverErr = err;
+                        console.error(err);
+                    });
+            });
+        },
+    },
+    computed: {
+        filteredGoods() {
+            const regexp = new RegExp(this.searchValue, 'i');
+            return this.goods.filter((goodsItem) => regexp.test(goodsItem.product_name));
+        },
+        totalPrice() {
+            return this.goods.reduce((acc, curr) => acc + curr.price, 0);
+        }
     }
-
-    fetchBasket() {
-        return new Promise((resolve, reject) => {
-            request('getBasket.json')
-                .then((basketGoodsFromServer) => {
-                    this.basketGoods = basketGoodsFromServer.contents;
-                    this.totalPrice = basketGoodsFromServer.amount;
-                    this.countGoods = basketGoodsFromServer.countGoods;
-                    resolve();
-                })
-                .catch((err) => {
-                    console.error(err);
-                });
-        })
-    }
-
-    addItem(item) {
-        return new Promise((resolve, reject) => {
-            request('addToBasket.json', 'GET')
-                .then((data) => {
-                    if (data.result === 1) {
-                        this.basketGoods.push(item);
-                    } else {
-                        console.error('addItem result != 1');
-                    }
-                    resolve();
-                })
-                .catch((err) => {
-                    console.error(err);
-                });
-        });
-    }
-
-    removeItem(id) {
-        return new Promise((resolve, reject) => {
-            request('deleteFromBasket.json', 'GET')
-                .then((data) => {
-                    if (data.result === 1) {
-                        this.basketGoods = this.basketGoods.filter((product) => product.id_product !== id);
-                    } else {
-                        console.error('removeItem result != 1');
-                    }
-                    resolve();
-                })
-                .catch((err) => {
-                    console.error(err);
-                });
-        });
-    }
-
-    render() {
-
-    }
-
-    changeQuantity() {
-
-    }
-
-    calculatePrice() {
-
-    }
-}
-
-class BasketItem {
-    render() {
-
-    }
-
-    changeQuantity() {
-
-    }
-
-    removeItem() {
-
-    }
-}
-
-const list = new GoodsList(new Basket());
-
-
-
-
-/*----------------------------hw4*/
-
-let text1 = `
-    Lorem ipsu'm dolo'r sit ame't, consectetur adipisicing elit, sed do eiusmod
-tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-quis 'nostrud exercitation ullamco laboris' nisi ut aliquip ex ea commodo
-consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-proident, sunt in 'culpa qui officia deserunt mollit anim id est laborum'.
-`;
-//console.log(text1);
-let regexp = /[\s\.]\'|\'[\s\.]/gm;
-let text2 = text1.replace(regexp, function(str){
-    return str.replace(/\'/,"\"");
-})
-//console.log(text2);
+});

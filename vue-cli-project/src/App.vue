@@ -2,15 +2,14 @@
   <div id="app">
     <header>
         <a href="/" class="logo">E-shop</a>
-        <input v-model="searchValue" type="text" class="search" placeholder="Поиск" />
-        <button class="cart-button" v-on:click="isCartVisible = !isCartVisible">Корзина</button>
-        <div class="cart" v-if="isCartVisible">
-            <div class="cart-item" v-for="item in basketGoods" v-bind:key="item.id_product">
-                <h4>{{item.product_name}}</h4>
-                <p>{{item.price}}</p>
-            </div>
-        </div>
+        <!-- <Search v-bind:value="searchValue" v-on:input="searchValue = $event" /> -->
+        <Search v-model="searchValue" />
+        <button class="cart-button" v-on:click="isCartVisible = !isCartVisible">
+          Корзина
+        </button>
+        <Cart v-if="isCartVisible" v-bind:goods="basketGoods" @remove-item="removeItem" />
     </header>
+    <Error v-if="error.length > 1" v-bind:message="error" />
     <main>
         <Goods v-bind:goods="filteredGoods" v-on:add-item="(item) => addItem(item)" />
     </main>
@@ -19,36 +18,44 @@
 
 <script>
 import Goods from "./components/Goods.vue";
+import Search from "./components/Search.vue";
+import Cart from "./components/Cart.vue";
+import Error from "./components/Error.vue";
 import './someStyles.css';
 
-const API = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses';
+const API = 'http://localhost:3000';
 
-const request = (url, method = 'GET') => {
-    return new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
+// const request = (url, method = 'GET', data) => {
+//     return new Promise((resolve, reject) => {
+//         const xhr = new XMLHttpRequest();
     
-        xhr.open(method, `${API}/${url}`);
+//         xhr.open(method, `${API}/${url}`);
+
+//         xhr.setRequestHeader('Content-Type', 'application/json');
     
-        xhr.onreadystatechange = () => {
-            if (xhr.readyState === 4) {
-                if (xhr.status === 200) {
-                    resolve(JSON.parse(xhr.responseText));
-                } else if(xhr.status === 404) {
-                    reject('Not Found error');
-                } else {
-                    reject('Unknown error');
-                }
-            }
-        }
+//         xhr.onreadystatechange = () => {
+//             if (xhr.readyState === 4) {
+//                 if (xhr.status === 200) {
+//                     resolve(JSON.parse(xhr.responseText));
+//                 } else if(xhr.status === 404) {
+//                     reject('Not Found error');
+//                 } else {
+//                     reject('Unknown error');
+//                 }
+//             }
+//         }
     
-        xhr.send();
-    });
-}
+//         xhr.send(JSON.stringify(data));
+//     });
+// }
 
 export default {
   name: "App",
   components: {
     Goods,
+    Search,
+    Cart,
+    Error,
   },
   data() {
     return {
@@ -56,44 +63,71 @@ export default {
       basketGoods: [],
       searchValue: "",
       isCartVisible: false,
+      error: '',
     };
   },
   mounted() {
-    this.fetchData();
+    // this.fetchData();
+
+    this.asyncFetchData();
+
     this.fetchBasket();
   },
   methods: {
     fetchData() {
       return new Promise((resolve) => {
-        request("catalogData.json")
+        fetch(`${API}/catalog`)
+          .then((res) => res.json())
           .then((goodsFromServer) => {
             this.goods = goodsFromServer;
             resolve();
           })
           .catch((err) => {
             console.error(err);
+            this.error = 'Ошибка получения списка товаров';
           });
       });
     },
+    async asyncFetchData() {
+      this.isLoading = true;
+      try {
+        const res = await fetch(`${API}/catalog`);
+        const goodsFromServer = await res.json();
+        this.goods = goodsFromServer;
+      } catch (error) {
+        console.error(error);
+        this.error = 'Ошибка получения списка товаров';
+      } finally {
+        this.isLoading = false;
+      }
+    },
     fetchBasket() {
       return new Promise((resolve) => {
-        request("getBasket.json")
+        fetch(`${API}/cart`)
+          .then((res) => res.json())
           .then((basketGoodsFromServer) => {
-            this.basketGoods = basketGoodsFromServer.contents;
+            this.basketGoods = basketGoodsFromServer;
             resolve();
           })
           .catch((err) => {
             console.error(err);
+            this.error = 'Ошибка получения корзины';
           });
       });
     },
     addItem(item) {
       return new Promise((resolve) => {
-        request("addToBasket.json", "GET")
+        fetch(`${API}/addToCart`, {
+          method: 'POST',
+          body: JSON.stringify(item),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+          .then((res) => res.json())
           .then((data) => {
             if (data.result === 1) {
               this.basketGoods.push(item);
-              console.log(this.basketGoods);
             } else {
               console.error("addItem result != 1");
             }
@@ -106,7 +140,10 @@ export default {
     },
     removeItem(id) {
       return new Promise((resolve) => {
-        request("deleteFromBasket.json", "GET")
+        fetch(`${API}/remove/${id}`, {
+          method: 'DELETE'
+        })
+          .then((res) => res.json())
           .then((data) => {
             if (data.result === 1) {
               this.basketGoods = this.basketGoods.filter(
