@@ -1,33 +1,30 @@
 <template>
   <section class="basket-block">
     <p class="total">Общая сумма вашего заказа: $</p>
-    <basket-item
-      v-for="elem in basket"
-      v-bind:elem="elem"
-      v-bind:key="elem.id_product"
-      v-on:del-item="delElem"
-    />
+    <div
+      class="basket-item"
+      v-for="item in basket"
+      v-bind:key="item.id_product"
+    >
+      <h4 class="title basket-title">{{ item.name }}</h4>
+      <p>$ {{ item.price }}</p>
+      <button class="del" @click="$emit('remove-item', item.id_product)">
+        del
+      </button>
+    </div>
   </section>
 </template>
 
 <script>
-import BasketItem from "./basketItem.vue";
 export default {
   name: "Basket",
-  components: {
-    BasketItem,
-  },
   props: ["basket"],
-  data() {
-    return {};
-  },
-  methods: {
-    delElem(elem) {
-      this.$emit("del-item", elem);
-    },
-  },
 };
 </script>
 
 <style scoped>
+.del {
+  padding: 5px;
+  margin-left: 10px;
+}
 </style>

@@ -34,5 +34,11 @@
         "price": 300,
         "img": "img/short.png",
         "id_product": 144
+    },
+    {
+        "name": "CARGOS",
+        "price": 700,
+        "img": "img/short.png",
+        "id_product": 164
     }
 ]
