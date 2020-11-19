@@ -6,7 +6,9 @@
             v-bind:item="item"
             @remove-item="removeItem"
         />
-
+        <div v-if="basket.length > 0">
+            Вы заказали товаров на сумму : {{ totalprice }}
+        </div>
         <div v-if="basket.length === 0">Корзина пуста</div> 
     </div>
 </template>
@@ -15,7 +17,7 @@
     import CartItem from './CartItem.vue';
     export default {
         name: 'Cart',
-        props: ['basket'],
+        props: ['basket','totalprice'],
         components: {
             CartItem,
         },

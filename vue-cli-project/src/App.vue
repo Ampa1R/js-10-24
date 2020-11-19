@@ -13,7 +13,7 @@
 
         <cart 
             v-bind:basket="basketGoods"
-            
+            v-bind:totalprice="totalPrice"
             v-if="isCartVisible"
             @remove-item="(itemId) => removeItem(itemId)"
         >
@@ -167,7 +167,11 @@ export default {
           return this.goods.filter((goodsItem) => regexp.test(goodsItem.product_name));
       },
       totalPrice() {
-          return this.basketGoods.reduce((acc, curr) => acc + curr.price, 0);
+          let a = 0;
+          for (let item of this.basketGoods) {
+            a += item.counter > 1 ? item.price * item.counter : item.price; 
+          }
+          return a;
       }
   }
 }
