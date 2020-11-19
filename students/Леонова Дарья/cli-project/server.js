@@ -58,7 +58,7 @@ app.post('/addToBasket', (request, response) => {
     });
 });
 
-app.get('/delFromBasket', (request, response) => {
+app.delete('/del/:id', (request, response) => {
     fs.readFile('./basket.json', 'utf-8', (err, data) => {
         if (err) {
             console.log('Fail', e);
@@ -68,9 +68,11 @@ app.get('/delFromBasket', (request, response) => {
 
         const basket = JSON.parse(data);
 
-        const elem = request.body;
+        const itemId = request.params.id;
 
-        basket.slice(indexOf(item), 1);
+        const fiteredBasket = basket.filter(
+            (product) => product.id_product !== parseInt(itemId)
+        );
 
         fs.writeFile('./basket.json', JSON.stringify(basket), (err) => {
             if (err) {

@@ -21,7 +21,7 @@
       <basket
         v-bind:basket="basket"
         v-if="show"
-        v-on:del-item="(elem) => removeItem(elem)"
+        @remove-item="removeItem"
       ></basket>
       <goods
         v-bind:goods="filtered"
@@ -130,13 +130,13 @@ export default {
       });
     },
     //удаление элементов
-    removeItem(elem) {
+    removeItem(id) {
       return new Promise((res) => {
-        request("delFromBasket", "Get", elem)
+        request(`del/${id}`, "DELETE")
           .then((data) => {
             if (data.result === 1) {
               this.basket = this.basket.filter(
-                (product) => product.id_product !== elem.id_product
+                (product) => product.id_product !== id
               );
             } else {
               console.error("removeItem result != 1");
